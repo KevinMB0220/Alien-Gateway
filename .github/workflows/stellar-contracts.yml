@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - "stellar-contracts/**"
+      - "Alien-Gateway/**"
       - ".github/workflows/stellar-contracts.yml"
   pull_request:
     paths:
-      - "stellar-contracts/**"
+      - "Alien-Gateway/**"
       - ".github/workflows/stellar-contracts.yml"
 
 jobs:
