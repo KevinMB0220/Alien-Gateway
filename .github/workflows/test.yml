@@ -31,20 +31,28 @@ jobs:
         source $HOME/.cargo/env
         cargo install cargo-llvm-cov
 
-    - name: Run tests with coverage
+    - name: Create coverage output directory
+      run: mkdir -p coverage/html
+
+    - name: Run tests and collect coverage data
       run: |
         source $HOME/.cargo/env
-        cargo llvm-cov test
+        cargo llvm-cov test --no-report
+
+    - name: Generate coverage stats
+      run: |
+        source $HOME/.cargo/env
+        cargo llvm-cov report
 
     - name: Generate LCOV coverage report
       run: |
         source $HOME/.cargo/env
-        cargo llvm-cov test --lcov --output-path=coverage/lcov.info
+        cargo llvm-cov report --lcov --output-path=coverage/lcov.info
 
     - name: Generate HTML coverage report
       run: |
         source $HOME/.cargo/env
-        cargo llvm-cov test --html --output-dir=coverage/html
+        cargo llvm-cov report --html --output-dir=coverage/html
 
     - name: Upload LCOV report as artifact
       uses: actions/upload-artifact@v4
