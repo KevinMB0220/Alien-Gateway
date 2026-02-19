@@ -1,9 +1,9 @@
 
-# 🌉 Alien Gateway (SNS)
+# 🌉 Alien Gateway 
 
 > **Send crypto to `@username` on Stellar**
 
-Alien Gateway is a **Stellar Naming Service (SNS)** — a decentralized, privacy-preserving username system for crypto payments on **Stellar**.
+Alien Gateway is a **Stellar Naming Service ** — a decentralized, privacy-preserving username system for crypto payments on **Stellar**.
 
 ---
 
@@ -27,7 +27,7 @@ SNS treats **usernames as a core payment primitive**, not just metadata.
 
 ---
 
-## How It Works (SNS)
+## How It Works 
 
 1. User registers `@username`
 2. Username is stored as a **ZK commitment**, not plaintext
