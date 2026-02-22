@@ -1,6 +1,6 @@
-use soroban_sdk::{
-    contracttype, symbol_short, Address, Env, Symbol, BytesN,
-};
+use soroban_sdk::{contracttype, symbol_short, Address, Env, Symbol};
+
+pub mod auth;
 
 // Storage Keys
 #[contracttype]
@@ -17,24 +17,17 @@ const INIT_EVENT: Symbol = symbol_short!("INIT");
 pub struct CoreContract;
 
 impl CoreContract {
-    pub fn init(env: Env, username: Symbol) {
+    /// Initialize the contract. Owner is the address that will have write access (auth).
+    pub fn init(env: Env, username: Symbol, owner: Address) {
         // Prevent re-init
         if env.storage().instance().has(&DataKey::Owner) {
             panic!("Contract already initialized");
         }
 
-        // Validate username
-        let name = username.to_string();
-
-        if name.is_empty() {
+        // Validate username: must not be empty (symbol_short!("") is the empty symbol)
+        if username == symbol_short!("") {
             panic!("Username cannot be empty");
         }
-
-        if name.len() > 32 {
-            panic!("Username too long");
-        }
-
-        let owner = env.invoker();
 
         // Store values
         env.storage().instance().set(&DataKey::Username, &username);
@@ -44,10 +37,7 @@ impl CoreContract {
             .set(&DataKey::CreatedAt, &env.ledger().timestamp());
 
         // Emit event
-        env.events().publish(
-            (INIT_EVENT,),
-            (username, owner)
-        );
+        env.events().publish((INIT_EVENT,), (username, owner));
     }
 
     // Getters
@@ -70,5 +60,11 @@ impl CoreContract {
             .instance()
             .get(&DataKey::CreatedAt)
             .unwrap()
+    }
+
+    /// Transfer ownership to a new address. Caller must be current owner.
+    pub fn transfer_ownership(env: Env, new_owner: Address) {
+        auth::require_owner(&env);
+        env.storage().instance().set(&DataKey::Owner, &new_owner);
     }
 }
